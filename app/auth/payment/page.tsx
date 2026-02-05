@@ -127,7 +127,7 @@ export default function PaymentPage() {
             </CardContent>
           </Card>
           <p className="text-center text-xs text-blue-600">
-            &copy; 2025 E-Deck Estimator by S F Johnson Enterprises, LLC
+            &copy; 2026 E-Deck Estimator by S F Johnson Enterprises, LLC
           </p>
         </div>
       </div>

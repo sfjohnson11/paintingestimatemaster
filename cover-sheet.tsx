@@ -93,7 +93,7 @@ export default function CoverSheet({ onAdminAccess, onGetStarted }: CoverSheetPr
                   <strong className="text-blue-700">Contractor:</strong> Your Painting Co.
                 </p>
                 <p className="mb-2">
-                  <strong className="text-blue-700">Date:</strong> 05/15/2025
+                  <strong className="text-blue-700">Date:</strong> 05/15/2026
                 </p>
                 <table className="w-full border-collapse text-left mb-4">
                   <thead>
@@ -154,7 +154,7 @@ export default function CoverSheet({ onAdminAccess, onGetStarted }: CoverSheetPr
 
       <footer className="mt-8 text-center bg-blue-200 py-4 rounded-b-lg">
         <p className="text-blue-800 font-semibold">
-          &copy; 2025 E-Deck Estimator by S F Johnson Enterprises, LLC. All rights reserved.
+          &copy; 2026 E-Deck Estimator by S F Johnson Enterprises, LLC. All rights reserved.
         </p>
         <p className="text-blue-700 mt-2 text-sm">
           Unauthorized use or reproduction of this software is strictly prohibited.
