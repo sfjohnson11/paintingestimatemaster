@@ -35,9 +35,10 @@ export default function PaymentPage() {
   }, [router])
 
   const handlePayment = () => {
-    // Redirect to Stripe payment link with prefilled email
+    // Redirect to Stripe payment link with prefilled email and success redirect
+    const successUrl = `${window.location.origin}/auth/payment/success`
     const paymentUrl = `${STRIPE_PAYMENT_LINK}?prefilled_email=${encodeURIComponent(user?.email || '')}`
-    window.open(paymentUrl, '_blank')
+    window.location.href = paymentUrl
   }
 
   if (isLoading) {
@@ -53,7 +54,7 @@ export default function PaymentPage() {
       <div className="w-full max-w-md">
         <div className="flex flex-col gap-6">
           <div className="text-center mb-4">
-            <h1 className="text-2xl font-bold text-blue-900">E-Deck Estimator</h1>
+            <h1 className="text-2xl font-bold text-blue-900">E-Deck Estimator for Painters</h1>
             <p className="text-sm text-blue-700">by S F Johnson Enterprises, LLC</p>
           </div>
           <Card className="border-blue-200 bg-white">
@@ -114,15 +115,8 @@ export default function PaymentPage() {
 
               <div className="mt-4 pt-4 border-t border-blue-100">
                 <p className="text-xs text-center text-blue-500">
-                  Already paid? Access may take a moment to activate.
+                  After payment, you will be automatically redirected to the estimator.
                 </p>
-                <Button
-                  variant="outline"
-                  onClick={() => router.push('/protected')}
-                  className="w-full mt-2 border-blue-200 text-blue-600 hover:bg-blue-50"
-                >
-                  Go to Estimator
-                </Button>
               </div>
             </CardContent>
           </Card>

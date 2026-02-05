@@ -24,6 +24,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Check for redirect param (e.g. coming from payment-success while not logged in)
+  const getRedirectUrl = () => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('redirect')
+    }
+    return null
+  }
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()
@@ -31,12 +40,29 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (error) throw error
-      router.push('/protected')
+
+      // Check if user has an active subscription
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', authData.user.id)
+        .eq('status', 'active')
+        .single()
+
+      // Check if there's a redirect URL (e.g. from payment success)
+      const redirectUrl = getRedirectUrl()
+      if (redirectUrl) {
+        router.push(redirectUrl)
+      } else if (subscription && new Date(subscription.expires_at) > new Date()) {
+        router.push('/protected')
+      } else {
+        router.push('/auth/payment')
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
@@ -49,7 +75,7 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="text-center mb-4">
-            <h1 className="text-2xl font-bold text-blue-900">E-Deck Estimator</h1>
+            <h1 className="text-2xl font-bold text-blue-900">E-Deck Estimator for Painters</h1>
             <p className="text-sm text-blue-700">by S F Johnson Enterprises, LLC</p>
           </div>
           <Card className="border-blue-200 bg-white">
