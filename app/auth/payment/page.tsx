@@ -115,15 +115,8 @@ export default function PaymentPage() {
 
               <div className="mt-4 pt-4 border-t border-blue-100">
                 <p className="text-xs text-center text-blue-500">
-                  Already paid? Click below to verify and activate your access.
+                  After payment, you will be automatically redirected to the estimator.
                 </p>
-                <Button
-                  variant="outline"
-                  onClick={() => router.push('/payment-success')}
-                  className="w-full mt-2 border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
-                >
-                  I've Already Paid - Activate Access
-                </Button>
               </div>
             </CardContent>
           </Card>

@@ -1,8 +1,6 @@
-"use server"
-
 import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { NextRequest } from "next/server"
+import { type NextRequest } from "next/server"
 
 export async function GET(request: NextRequest) {
   const sessionId = request.nextUrl.searchParams.get("session_id")
@@ -10,8 +8,16 @@ export async function GET(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
-    // User is not logged in - redirect to login, then they'll come back after
-    redirect(`/auth/login?redirect=/payment-success${sessionId ? `?session_id=${sessionId}` : ''}`)
+    // User is not logged in - redirect to login, then come back with session_id
+    const returnUrl = sessionId
+      ? `/payment-success?session_id=${sessionId}`
+      : '/auth/payment'
+    redirect(`/auth/login?redirect=${encodeURIComponent(returnUrl)}`)
+  }
+
+  // REQUIRE a session_id from Stripe to activate subscription
+  if (!sessionId) {
+    redirect("/auth/payment")
   }
 
   // Activate subscription for this user
@@ -23,7 +29,6 @@ export async function GET(request: NextRequest) {
   }, { onConflict: "user_id" })
 
   if (error) {
-    console.error("[v0] Error creating subscription:", error)
     redirect("/auth/payment?error=subscription_failed")
   }
 

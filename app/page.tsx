@@ -21,7 +21,19 @@ export default async function Home({
   const { data } = await supabase.auth.getUser()
 
   if (data?.user) {
-    redirect('/protected')
+    // Check if user has an active subscription
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', data.user.id)
+      .eq('status', 'active')
+      .single()
+
+    if (subscription && new Date(subscription.expires_at) > new Date()) {
+      redirect('/protected')
+    } else {
+      redirect('/auth/payment')
+    }
   } else {
     redirect('/auth/login')
   }
