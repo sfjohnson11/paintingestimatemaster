@@ -1,3 +1,4 @@
 {
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "rm -f pnpm-lock.yaml && npm install",
+  "framework": "nextjs"
 }
