@@ -24,6 +24,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
+  // Check for redirect param (e.g. coming from payment-success while not logged in)
+  const getRedirectUrl = () => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      return params.get('redirect')
+    }
+    return null
+  }
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     const supabase = createClient()
@@ -45,7 +54,11 @@ export default function LoginPage() {
         .eq('status', 'active')
         .single()
 
-      if (subscription && new Date(subscription.expires_at) > new Date()) {
+      // Check if there's a redirect URL (e.g. from payment success)
+      const redirectUrl = getRedirectUrl()
+      if (redirectUrl) {
+        router.push(redirectUrl)
+      } else if (subscription && new Date(subscription.expires_at) > new Date()) {
         router.push('/protected')
       } else {
         router.push('/auth/payment')

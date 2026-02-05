@@ -119,7 +119,7 @@ export default function PaymentPage() {
                 </p>
                 <Button
                   variant="outline"
-                  onClick={() => router.push('/auth/payment/success')}
+                  onClick={() => router.push('/payment-success')}
                   className="w-full mt-2 border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
                 >
                   I've Already Paid - Activate Access
