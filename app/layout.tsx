@@ -8,7 +8,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'E-Deck Estimator - Painting Estimate Tool',
+  title: 'E-Deck Estimator for Painters - Painting Estimate Tool',
   description: 'Professional painting estimation tool by S F Johnson Enterprises, LLC',
   generator: 'v0.app',
   icons: {

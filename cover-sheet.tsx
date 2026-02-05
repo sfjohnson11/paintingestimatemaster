@@ -49,7 +49,7 @@ export default function CoverSheet({ onAdminAccess, onGetStarted }: CoverSheetPr
       )}
 
       <h1 className="text-3xl font-bold text-blue-900 text-center mb-8 bg-blue-200 py-4 rounded-t-lg">
-        E-Deck Estimator by S F Johnson Enterprises, LLC
+        E-Deck Estimator for Painters by S F Johnson Enterprises, LLC
       </h1>
 
       <div className="grid md:grid-cols-2 gap-6">

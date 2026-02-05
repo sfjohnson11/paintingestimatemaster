@@ -23,7 +23,7 @@ export default function ProtectedEstimator({ userEmail }: ProtectedEstimatorProp
     <div>
       <div className="flex items-center justify-between bg-blue-900 text-white px-4 py-2 print:hidden">
         <div className="flex items-center gap-4">
-          <span className="font-bold text-sm">E-Deck Estimator</span>
+          <span className="font-bold text-sm">E-Deck Estimator for Painters</span>
           <span className="text-xs text-blue-300">{userEmail}</span>
         </div>
         <Button
