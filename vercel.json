@@ -1,0 +1,4 @@
+{
+  "installCommand": "rm -f pnpm-lock.yaml && yarn install --no-lockfile",
+  "framework": "nextjs"
+}
