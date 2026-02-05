@@ -35,9 +35,10 @@ export default function PaymentPage() {
   }, [router])
 
   const handlePayment = () => {
-    // Redirect to Stripe payment link with prefilled email
+    // Redirect to Stripe payment link with prefilled email and success redirect
+    const successUrl = `${window.location.origin}/auth/payment/success`
     const paymentUrl = `${STRIPE_PAYMENT_LINK}?prefilled_email=${encodeURIComponent(user?.email || '')}`
-    window.open(paymentUrl, '_blank')
+    window.location.href = paymentUrl
   }
 
   if (isLoading) {
@@ -114,14 +115,14 @@ export default function PaymentPage() {
 
               <div className="mt-4 pt-4 border-t border-blue-100">
                 <p className="text-xs text-center text-blue-500">
-                  Already paid? Access may take a moment to activate.
+                  Already paid? Click below to verify and activate your access.
                 </p>
                 <Button
                   variant="outline"
-                  onClick={() => router.push('/protected')}
-                  className="w-full mt-2 border-blue-200 text-blue-600 hover:bg-blue-50"
+                  onClick={() => router.push('/auth/payment/success')}
+                  className="w-full mt-2 border-blue-200 text-blue-600 hover:bg-blue-50 bg-transparent"
                 >
-                  Go to Estimator
+                  I've Already Paid - Activate Access
                 </Button>
               </div>
             </CardContent>

@@ -31,12 +31,25 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data: authData, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
       if (error) throw error
-      router.push('/protected')
+
+      // Check if user has an active subscription
+      const { data: subscription } = await supabase
+        .from('subscriptions')
+        .select('*')
+        .eq('user_id', authData.user.id)
+        .eq('status', 'active')
+        .single()
+
+      if (subscription && new Date(subscription.expires_at) > new Date()) {
+        router.push('/protected')
+      } else {
+        router.push('/auth/payment')
+      }
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
