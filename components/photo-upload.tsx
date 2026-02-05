@@ -60,4 +60,3 @@ const PhotoUpload: React.FC<PhotoUploadProps> = ({ onPhotosChange }) => {
 }
 
 export default PhotoUpload
-

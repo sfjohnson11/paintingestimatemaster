@@ -1,7 +1,13 @@
-"use client"
+import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 
-import PaintingEstimateForm from "../painting-estimate-form"
+export default async function Home() {
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getUser()
 
-export default function SyntheticV0PageForDeployment() {
-  return <PaintingEstimateForm />
+  if (data?.user) {
+    redirect('/protected')
+  } else {
+    redirect('/auth/login')
+  }
 }

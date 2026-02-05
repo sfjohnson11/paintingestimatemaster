@@ -163,4 +163,3 @@ export default function CoverSheet({ onAdminAccess, onGetStarted }: CoverSheetPr
     </div>
   )
 }
-
