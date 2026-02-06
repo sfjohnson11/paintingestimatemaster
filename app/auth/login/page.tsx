@@ -25,18 +25,16 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  // Read any error passed in from /auth/callback or other pages
+  // Optional: /auth/login?redirect=/some/internal/path
+  const redirectParam = useMemo(() => {
+    const r = searchParams?.get('redirect')
+    return r && r.startsWith('/') ? r : null
+  }, [searchParams])
+
+  // Optional: show message passed from /auth/callback or elsewhere
   const urlError = useMemo(() => {
     const msg = searchParams?.get('error')
     return msg ? decodeURIComponent(msg) : null
-  }, [searchParams])
-
-  // Optional redirect support: /auth/login?redirect=/protected
-  const redirectParam = useMemo(() => {
-    const r = searchParams?.get('redirect')
-    // Only allow internal redirects for safety
-    if (r && r.startsWith('/')) return r
-    return null
   }, [searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -47,15 +45,43 @@ export default function LoginPage() {
     try {
       const supabase = createClient()
 
-      const { error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      })
+      const { data: authData, error: signInError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        })
 
       if (signInError) throw signInError
+      if (!authData?.user) throw new Error('Login failed: no user returned.')
 
-      // ✅ If you passed a redirect, go there. Otherwise go to payment explainer.
-      router.push(redirectParam ?? '/auth/payment')
+      // ✅ Authorization check (Option A): subscriptions table
+      const { data: subscription, error: subError } = await supabase
+        .from('subscriptions')
+        .select('status, expires_at')
+        .eq('user_id', authData.user.id)
+        .maybeSingle()
+
+      // If the table is missing/RLS blocks/other real error, fail safely to payment
+      if (subError) {
+        console.error('Subscription lookup error:', subError)
+        router.push('/auth/payment')
+        router.refresh()
+        return
+      }
+
+      const isActive =
+        subscription?.status === 'active' &&
+        (!subscription?.expires_at ||
+          new Date(subscription.expires_at) > new Date())
+
+      if (redirectParam) {
+        router.push(redirectParam)
+      } else if (isActive) {
+        router.push('/protected')
+      } else {
+        router.push('/auth/payment')
+      }
+
       router.refresh()
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -72,16 +98,14 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-blue-900">
               E-Deck Estimator for Painters
             </h1>
-            <p className="text-sm text-blue-700">
-              by S F Johnson Enterprises, LLC
-            </p>
+            <p className="text-sm text-blue-700">by S F Johnson Enterprises, LLC</p>
           </div>
 
           <Card className="border-blue-200 bg-white">
             <CardHeader>
               <CardTitle className="text-2xl text-blue-900">Login</CardTitle>
               <CardDescription className="text-blue-600">
-                Enter your email and password to login.
+                Enter your email and password to login to your account
               </CardDescription>
             </CardHeader>
 
